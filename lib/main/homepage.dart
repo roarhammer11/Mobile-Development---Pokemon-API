@@ -239,7 +239,12 @@ class _HomepageState extends State<Homepage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("id#: " + specificApi["id"].toString()),
-                    Text("Name: " + specificApi["name"])
+                    Text("Name: " + specificApi["name"]),
+                    Text("Base Experience: " +
+                        specificApi["base_experience"].toString()),
+                    Text("Height: " + specificApi["height"].toString()),
+                    Text("Weight: " + specificApi["weight"].toString()),
+                    Image.network(specificApi["sprites"]["front_default"])
                   ],
                 ),
               ),
