@@ -232,19 +232,30 @@ class _HomepageState extends State<Homepage> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)),
             child: Container(
-              constraints: const BoxConstraints(maxHeight: 350),
+              constraints: const BoxConstraints(maxHeight: 300, maxWidth: 125),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("id#: " + specificApi["id"].toString()),
-                    Text("Name: " + specificApi["name"]),
-                    Text("Base Experience: " +
-                        specificApi["base_experience"].toString()),
-                    Text("Height: " + specificApi["height"].toString()),
-                    Text("Weight: " + specificApi["weight"].toString()),
-                    Image.network(specificApi["sprites"]["front_default"])
+                    Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text("id#: " + specificApi["id"].toString()),
+                            Text("Name: " + specificApi["name"]),
+                            Text("Base Experience: " +
+                                specificApi["base_experience"].toString()),
+                            Text("Height: " + specificApi["height"].toString()),
+                            Text("Weight: " + specificApi["weight"].toString()),
+                          ],
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                            child: Image.network(
+                                specificApi["sprites"]["front_default"])),
+                      ],
+                    )
                   ],
                 ),
               ),
