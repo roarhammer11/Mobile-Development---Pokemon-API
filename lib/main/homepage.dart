@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_unnecessary_containers
+// ignore_for_file: avoid_unnecessary_containers, prefer_interpolation_to_compose_strings
 
 import 'dart:convert';
 
@@ -40,9 +40,9 @@ class _HomepageState extends State<Homepage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            const ElevatedButton(
-              onPressed: null,
-              child: Padding(
+            ElevatedButton(
+              onPressed: dashboard,
+              child: const Padding(
                 padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -85,7 +85,7 @@ class _HomepageState extends State<Homepage> {
     return Builder(
       builder: (BuildContext context) {
         return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Expanded(child: futureBuilder()),
               Expanded(flex: 0, child: moveApi())
@@ -116,7 +116,11 @@ class _HomepageState extends State<Homepage> {
         future: instanceOfApi,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Padding(
+                padding: EdgeInsets.all(250),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [CircularProgressIndicator()]));
           }
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.done) {
@@ -127,7 +131,10 @@ class _HomepageState extends State<Homepage> {
                 return ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.indigo),
-                    onPressed: null,
+                    onPressed: () {
+                      _showSimpleModalDialog(
+                          context, snapshot.data["results"][index]);
+                    },
                     // child: Text(snapshot.data["results"][index]["name"] ??
                     //     "got null "));
                     child: Padding(
@@ -154,26 +161,37 @@ class _HomepageState extends State<Homepage> {
 
   Container moveApi() {
     return Container(
-        child: Row(children: [
-      ElevatedButton(onPressed: previousApi, child: const Text("Previous")),
-      ElevatedButton(onPressed: nextApi, child: const Text("Next"))
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      ElevatedButton(
+        onPressed: previousApi,
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+        child: const Text("Previous"),
+      ),
+      ElevatedButton(
+          onPressed: nextApi,
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+          child: const Text("Next"))
     ]));
   }
 
   void previousApi() async {
-    if (api["previous"] != "null") {
+    if (api["previous"] != null) {
       instanceOfApi = callApi(api["previous"]);
       print(api["previous"]);
-      createDashbord();
+      setState(() {
+        createDashbord();
+      });
       build(context);
     }
   }
 
   void nextApi() async {
-    if (api["next"] != "null") {
+    if (api["next"] != null) {
       instanceOfApi = callApi(api["next"]);
       print(api["next"]);
-      createDashbord();
+      setState(() {
+        createDashbord();
+      });
       build(context);
     }
   }
@@ -200,5 +218,33 @@ class _HomepageState extends State<Homepage> {
     // }
     // print(api);
     return api;
+  }
+
+  _showSimpleModalDialog(context, api) async {
+    Response response = await http
+        .get(Uri.parse("https://pokeapi.co/api/v2/pokemon/" + api["name"]));
+    Map<String, dynamic> specificApi = jsonDecode(response.body);
+    print(specificApi);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 350),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("id#: " + specificApi["id"].toString()),
+                    Text("Name: " + specificApi["name"])
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
