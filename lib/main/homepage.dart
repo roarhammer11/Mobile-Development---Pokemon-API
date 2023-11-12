@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'settings.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/src/response.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -15,12 +16,12 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final myController = TextEditingController();
-  List<Widget> list = [];
   late Future instanceOfApi;
+  Map<String, dynamic> api = {};
   @override
   void initState() {
     super.initState();
-    instanceOfApi = callApi();
+    instanceOfApi = callApi("https://pokeapi.co/api/v2/pokemon/");
     // print(instanceOfApi);
   }
 
@@ -39,9 +40,9 @@ class _HomepageState extends State<Homepage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            ElevatedButton(
-              onPressed: callApi,
-              child: const Padding(
+            const ElevatedButton(
+              onPressed: null,
+              child: Padding(
                 padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -60,12 +61,12 @@ class _HomepageState extends State<Homepage> {
               ),
             ),
             ElevatedButton(
-                onPressed: inventory,
+                onPressed: releasePokemon,
                 child: const Padding(
                   padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [Icon(Icons.shopping_bag), Text("Inventory")],
+                    children: [Icon(Icons.cancel), Text("Release")],
                   ), //Container
                 ))
           ],
@@ -80,25 +81,17 @@ class _HomepageState extends State<Homepage> {
   //   // print(api["results"][0]);
   // }
 
-  FutureBuilder createDashbord() {
-    return FutureBuilder(
-        future: instanceOfApi,
-        builder: (context, snapshot) {
-          if (snapshot.hasData &&
-              snapshot.connectionState == ConnectionState.done) {
-            print(snapshot.data!);
-            return ListView.builder(
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return ElevatedButton(
-                    onPressed: null,
-                    child: Text(snapshot.data["results"][index]["name"] ??
-                        "got null "));
-              },
-            );
-          }
-          return const Text("hehe");
-        });
+  Builder createDashbord() {
+    return Builder(
+      builder: (BuildContext context) {
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Expanded(child: futureBuilder()),
+              Expanded(flex: 0, child: moveApi())
+            ]);
+      },
+    );
     // return FutureBuilder(
     //   future: instanceOfApi,
     //   builder: (context, snapshot) => ListView.builder(
@@ -118,36 +111,94 @@ class _HomepageState extends State<Homepage> {
   // ) {
   //   return Container(child: ctxt[index]);
   // }
+  FutureBuilder futureBuilder() {
+    return FutureBuilder(
+        future: instanceOfApi,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+          if (snapshot.hasData &&
+              snapshot.connectionState == ConnectionState.done) {
+            print(snapshot.data!);
+            return ListView.builder(
+              itemCount: 20,
+              itemBuilder: (context, index) {
+                return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.indigo),
+                    onPressed: null,
+                    // child: Text(snapshot.data["results"][index]["name"] ??
+                    //     "got null "));
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(100, 20, 100, 20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(snapshot.data["results"][index]["name"])
+                        ],
+                      ), //Container
+                    ));
+              },
+            );
+          }
+          // list.add(Container(
+          //     child: Row(children: [
+          //   ElevatedButton(
+          //       onPressed: previousApi, child: const Text("Previous")),
+          //   ElevatedButton(onPressed: nextApi, child: const Text("Next"))
+          // ])));
+          return const Text("hehe");
+        });
+  }
+
+  Container moveApi() {
+    return Container(
+        child: Row(children: [
+      ElevatedButton(onPressed: previousApi, child: const Text("Previous")),
+      ElevatedButton(onPressed: nextApi, child: const Text("Next"))
+    ]));
+  }
+
+  void previousApi() async {
+    if (api["previous"] != "null") {
+      instanceOfApi = callApi(api["previous"]);
+      print(api["previous"]);
+      createDashbord();
+      build(context);
+    }
+  }
+
+  void nextApi() async {
+    if (api["next"] != "null") {
+      instanceOfApi = callApi(api["next"]);
+      print(api["next"]);
+      createDashbord();
+      build(context);
+    }
+  }
 
   void dashboard() {}
   void catchPokemon() {}
-  void inventory() {}
+  void releasePokemon() {}
   void settings() {
     Navigator.pushNamed(context, Settings.routeName);
   }
 
-  Future callApi() async {
-    Map<String, dynamic> api = {};
-    final response =
-        await http.get(Uri.parse("https://pokeapi.co/api/v2/pokemon/"));
+  Future callApi(domain) async {
+    Response response = await http.get(Uri.parse(domain));
+
     api = jsonDecode(response.body);
-    await createWidget(api);
+    // Response response =
+    //     await http.get(Uri.parse("https://pokeapi.co/api/v2/pokemon/"));
+    // dynamic json = jsonDecode(response.body);
+    // api.addAll(json);
+    // while (json["next"] != null) {
+    //   Response newResponse = await http.get(Uri.parse(json["next"]));
+    //   dynamic newJson = jsonDecode(newResponse.body);
+    //   api.addAll(newJson);
+    // }
     // print(api);
     return api;
-  }
-
-  createWidget(api) async {
-    for (int i = 0; i < 20; i++) {
-      String name = await api["results"][i]["name"];
-      print(name);
-      list.add(Container(
-        child: ElevatedButton(
-          onPressed: null,
-          child: Padding(
-              padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
-              child: Text(name)),
-        ),
-      ));
-    }
   }
 }
