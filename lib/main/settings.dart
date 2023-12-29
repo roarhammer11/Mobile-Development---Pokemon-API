@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'components/primary_button.dart';
-import 'login.dart';
+import 'index.dart';
 
 class Settings extends StatefulWidget {
   static const String routeName = "settings";
@@ -31,7 +31,7 @@ class _SettingsState extends State<Settings> {
   }
 
   void logout() {
-    Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+    Navigator.pushReplacementNamed(context, Index.routeName);
 
   }
 }

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'settings.dart';
 import 'package:http/http.dart' as http;
+// ignore: implementation_imports
 import 'package:http/src/response.dart';
 
 class Homepage extends StatefulWidget {
@@ -43,7 +44,7 @@ class _HomepageState extends State<Homepage> {
             ElevatedButton(
               onPressed: dashboard,
               child: const Padding(
-                padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [Icon(Icons.dashboard), Text("Dashboard")],
@@ -53,7 +54,7 @@ class _HomepageState extends State<Homepage> {
             ElevatedButton(
               onPressed: catchPokemon,
               child: const Padding(
-                padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [Icon(Icons.catching_pokemon), Text("Catch")],
@@ -63,7 +64,7 @@ class _HomepageState extends State<Homepage> {
             ElevatedButton(
                 onPressed: releasePokemon,
                 child: const Padding(
-                  padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [Icon(Icons.cancel), Text("Release")],
@@ -74,12 +75,6 @@ class _HomepageState extends State<Homepage> {
       ),
     );
   }
-
-  // @override
-  // void afterFirstLayout(BuildContext context) async {
-  //   await callApi();
-  //   // print(api["results"][0]);
-  // }
 
   Builder createDashbord() {
     return Builder(
@@ -92,25 +87,8 @@ class _HomepageState extends State<Homepage> {
             ]);
       },
     );
-    // return FutureBuilder(
-    //   future: instanceOfApi,
-    //   builder: (context, snapshot) => ListView.builder(
-    //     itemBuilder: (BuildContext ctxt, int index) =>
-    //         build(ctxt, index)
-    //   ),
-    // );
-    // return ListView.builder(
-    //   itemCount: api["count"],
-    //   itemBuilder: (BuildContext ctx, int index) => buildBody(ctx, index, list),
-    // );
   }
 
-  // Widget buildBody(
-  //   BuildContext ctxt,
-  //   int index,
-  // ) {
-  //   return Container(child: ctxt[index]);
-  // }
   FutureBuilder futureBuilder() {
     return FutureBuilder(
         future: instanceOfApi,
@@ -124,7 +102,6 @@ class _HomepageState extends State<Homepage> {
           }
           if (snapshot.hasData &&
               snapshot.connectionState == ConnectionState.done) {
-            print(snapshot.data!);
             return ListView.builder(
               itemCount: 20,
               itemBuilder: (context, index) {
@@ -149,13 +126,27 @@ class _HomepageState extends State<Homepage> {
               },
             );
           }
-          // list.add(Container(
-          //     child: Row(children: [
-          //   ElevatedButton(
-          //       onPressed: previousApi, child: const Text("Previous")),
-          //   ElevatedButton(onPressed: nextApi, child: const Text("Next"))
-          // ])));
-          return const Text("hehe");
+          return ListView.builder(
+            itemCount: 20,
+            itemBuilder: (context, index) {
+              return ElevatedButton(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.indigo),
+                  onPressed: () {
+                    _showSimpleModalDialog(
+                        context, snapshot.data["results"][index]);
+                  },
+                  // child: Text(snapshot.data["results"][index]["name"] ??
+                  //     "got null "));
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(100, 20, 100, 20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [Text(snapshot.data["results"][index]["name"])],
+                    ), //Container
+                  ));
+            },
+          );
         });
   }
 
@@ -177,7 +168,6 @@ class _HomepageState extends State<Homepage> {
   void previousApi() async {
     if (api["previous"] != null) {
       instanceOfApi = callApi(api["previous"]);
-      print(api["previous"]);
       setState(() {
         createDashbord();
       });
@@ -188,7 +178,6 @@ class _HomepageState extends State<Homepage> {
   void nextApi() async {
     if (api["next"] != null) {
       instanceOfApi = callApi(api["next"]);
-      print(api["next"]);
       setState(() {
         createDashbord();
       });
@@ -205,18 +194,7 @@ class _HomepageState extends State<Homepage> {
 
   Future callApi(domain) async {
     Response response = await http.get(Uri.parse(domain));
-
     api = jsonDecode(response.body);
-    // Response response =
-    //     await http.get(Uri.parse("https://pokeapi.co/api/v2/pokemon/"));
-    // dynamic json = jsonDecode(response.body);
-    // api.addAll(json);
-    // while (json["next"] != null) {
-    //   Response newResponse = await http.get(Uri.parse(json["next"]));
-    //   dynamic newJson = jsonDecode(newResponse.body);
-    //   api.addAll(newJson);
-    // }
-    // print(api);
     return api;
   }
 
@@ -224,7 +202,6 @@ class _HomepageState extends State<Homepage> {
     Response response = await http
         .get(Uri.parse("https://pokeapi.co/api/v2/pokemon/" + api["name"]));
     Map<String, dynamic> specificApi = jsonDecode(response.body);
-    print(specificApi);
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -236,26 +213,33 @@ class _HomepageState extends State<Homepage> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
+                    Image.network(
+                      specificApi["sprites"]["front_default"],
+                      frameBuilder: (BuildContext context, Widget child,
+                          int? frame, bool? wasSynchronouslyLoaded) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: child,
+                        );
+                      },
+                      loadingBuilder: (BuildContext context, Widget child,
+                          ImageChunkEvent? loadingProgress) {
+                        return Center(child: child);
+                      },
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Column(
-                          children: [
-                            Text("id#: " + specificApi["id"].toString()),
-                            Text("Name: " + specificApi["name"]),
-                            Text("Base Experience: " +
-                                specificApi["base_experience"].toString()),
-                            Text("Height: " + specificApi["height"].toString()),
-                            Text("Weight: " + specificApi["weight"].toString()),
-                          ],
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                            child: Image.network(
-                                specificApi["sprites"]["front_default"])),
+                        Text("id#: " + specificApi["id"].toString()),
+                        Text("Name: " + specificApi["name"]),
+                        Text("Base Experience: " +
+                            specificApi["base_experience"].toString()),
+                        Text("Height: " + specificApi["height"].toString()),
+                        Text("Weight: " + specificApi["weight"].toString()),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

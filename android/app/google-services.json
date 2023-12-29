@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "499408192380",
+    "project_id": "mobile-dev-e5b60",
+    "storage_bucket": "mobile-dev-e5b60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499408192380:android:07a3b9980987e86c845af9",
+        "android_client_info": {
+          "package_name": "com.example.pokemon_api"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJYDZO001bagOy_JzOsGLS4T_gfZvhJIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
