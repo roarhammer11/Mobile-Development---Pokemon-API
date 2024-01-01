@@ -194,13 +194,22 @@ class _IndexState extends State<Index> {
     });
   }
 
-  void loginWithEmail() {
+  void loginWithEmail() async {
     // if (Navigator.canPop(context)) {
     //   Navigator.pop(context); //Ensures that context is empty when logging in
     // }
     // Navigator.pushReplacementNamed(context, Homepage.routeName);
     if (loginPasswordTextController.text.isNotEmpty &&
         loginEmailTextController.text.isNotEmpty) {
+      try {
+        final userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+                email: loginEmailTextController.text,
+                password: loginPasswordTextController.text);
+        print(userCredential);
+      } catch (e) {
+        _showMyDialog('Failed to sign in', 'Invalid email or password.');
+      }
     } else {
       _showMyDialog('Empty Field', 'All fields should have a value.');
     }
