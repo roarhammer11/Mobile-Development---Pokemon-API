@@ -7,10 +7,14 @@ import 'settings.dart';
 import 'package:http/http.dart' as http;
 // ignore: implementation_imports
 import 'package:http/src/response.dart';
+import 'package:pokemon_api/main/dashboard_argument.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  const Homepage({
+    super.key,
+  });
   static const String routeName = "homepage";
+
   @override
   State<Homepage> createState() => _HomepageState();
 }
@@ -18,6 +22,7 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   final myController = TextEditingController();
   late Future instanceOfApi;
+  late ScreenArguments args;
   Map<String, dynamic> api = {};
   @override
   void initState() {
@@ -28,6 +33,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Homepage"),
@@ -189,7 +195,8 @@ class _HomepageState extends State<Homepage> {
   void catchPokemon() {}
   void releasePokemon() {}
   void settings() {
-    Navigator.pushNamed(context, Settings.routeName);
+    Navigator.pushNamed(context, Settings.routeName,
+        arguments: ScreenArguments(args.displayName, args.email));
   }
 
   Future callApi(domain) async {

@@ -1,13 +1,14 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:pokemon_api/main/homepage.dart';
 import 'components/custom_text_form_field.dart';
 import 'components/password_field.dart';
 import 'components/primary_button.dart';
-import 'homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:pokemon_api/main/dashboard_argument.dart';
 
 class Index extends StatefulWidget {
   static const String routeName = "login";
@@ -194,11 +195,15 @@ class _IndexState extends State<Index> {
     });
   }
 
+  void redirectHomepage(displayName, email) async {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context); //Ensures that context is empty when logging in
+    }
+    Navigator.pushReplacementNamed(context, Homepage.routeName,
+        arguments: ScreenArguments(displayName, email));
+  }
+
   void loginWithEmail() async {
-    // if (Navigator.canPop(context)) {
-    //   Navigator.pop(context); //Ensures that context is empty when logging in
-    // }
-    // Navigator.pushReplacementNamed(context, Homepage.routeName);
     if (loginPasswordTextController.text.isNotEmpty &&
         loginEmailTextController.text.isNotEmpty) {
       try {
@@ -207,6 +212,11 @@ class _IndexState extends State<Index> {
                 email: loginEmailTextController.text,
                 password: loginPasswordTextController.text);
         print(userCredential);
+        // print(userCredential.user?.providerData[0].displayName);
+        // print(userCredential.user?.email);
+        final displayName = userCredential.user?.providerData[0].displayName;
+        final email = userCredential.user?.email;
+        redirectHomepage(displayName, email);
       } catch (e) {
         _showMyDialog('Failed to sign in', 'Invalid email or password.');
       }
@@ -228,23 +238,6 @@ class _IndexState extends State<Index> {
     } catch (e) {
       print(e);
     }
-    // on FirebaseAuthException catch (e) {
-    //   switch (e.code) {
-    //     case "provider-already-linked":
-    //       print("The provider has already been linked to the user.");
-    //       break;
-    //     case "invalid-credential":
-    //       print("The provider's credential is not valid.");
-    //       break;
-    //     case "credential-already-in-use":
-    //       print("The account corresponding to the credential already exists, "
-    //           "or is already linked to a Firebase User.");
-    //       break;
-    //     // See the API reference for the full list of error codes.
-    //     default:
-    //       print("Unknown error.");
-    //   }
-    // }
   }
 
   void register() async {
