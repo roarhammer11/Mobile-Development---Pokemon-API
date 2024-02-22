@@ -235,6 +235,9 @@ class _IndexState extends State<Index> {
       final userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
       print(userCredential);
+      final displayName = userCredential.user?.providerData[0].displayName;
+      final email = userCredential.user?.email;
+      redirectHomepage(displayName, email);
     } catch (e) {
       print(e);
     }
