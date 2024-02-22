@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'components/primary_button.dart';
 import 'index.dart';
 import 'package:pokemon_api/main/dashboard_argument.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Settings extends StatefulWidget {
   static const String routeName = "settings";
@@ -12,7 +13,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  var args;
+  var args = ScreenArguments("", "");
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
@@ -36,6 +37,7 @@ class _SettingsState extends State<Settings> {
   }
 
   void logout() {
-    Navigator.pushReplacementNamed(context, Index.routeName);
+    FirebaseAuth.instance.signOut().then(
+        (value) => {Navigator.pushReplacementNamed(context, Index.routeName)});
   }
 }
