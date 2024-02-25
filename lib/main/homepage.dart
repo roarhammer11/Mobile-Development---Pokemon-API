@@ -45,12 +45,12 @@ class _HomepageState extends State<Homepage> {
       bottomNavigationBar: BottomAppBar(
         color: Colors.blue,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             ElevatedButton(
               onPressed: dashboard,
               child: const Padding(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [Icon(Icons.dashboard), Text("Dashboard")],
@@ -60,7 +60,7 @@ class _HomepageState extends State<Homepage> {
             ElevatedButton(
               onPressed: catchPokemon,
               child: const Padding(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [Icon(Icons.catching_pokemon), Text("Catch")],
@@ -70,7 +70,7 @@ class _HomepageState extends State<Homepage> {
             ElevatedButton(
                 onPressed: releasePokemon,
                 child: const Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [Icon(Icons.cancel), Text("Release")],
@@ -125,7 +125,10 @@ class _HomepageState extends State<Homepage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(snapshot.data["results"][index]["name"])
+                          Text(
+                            snapshot.data["results"][index]["name"],
+                            style: const TextStyle(color: Colors.white),
+                          )
                         ],
                       ), //Container
                     ));

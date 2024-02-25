@@ -260,10 +260,20 @@ class _IndexState extends State<Index> {
           final googleCredential = GoogleAuthProvider.credential(
               accessToken: googleAuth?.accessToken,
               idToken: googleAuth?.idToken);
-          if (currentUser != null && !currentUser.isAnonymous) {
-            await currentUser.linkWithCredential(googleCredential);
+          print(currentUser);
+          print(currentUser?.emailVerified);
+          print(googleCredential);
+          if (currentUser != null && !currentUser.emailVerified) {
+            print("hehe");
+            final credential =
+                await currentUser.linkWithCredential(googleCredential);
+            print(credential);
+            print(currentUser.emailVerified);
             _showMyDialog('Account creation successful',
                 'The account has been successfully been created.');
+            FirebaseAuth.instance
+                .signOut()
+                .then((value) => GoogleSignIn().signOut());
           }
 
           // print(userCredential);
