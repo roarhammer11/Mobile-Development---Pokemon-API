@@ -3,6 +3,7 @@ import 'components/primary_button.dart';
 import 'index.dart';
 import 'package:pokemon_api/main/dashboard_argument.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Settings extends StatefulWidget {
   static const String routeName = "settings";
@@ -37,7 +38,9 @@ class _SettingsState extends State<Settings> {
   }
 
   void logout() {
-    FirebaseAuth.instance.signOut().then(
-        (value) => {Navigator.pushReplacementNamed(context, Index.routeName)});
+    FirebaseAuth.instance.signOut().then((value) => {
+          GoogleSignIn().signOut().then((value) =>
+              {Navigator.pushReplacementNamed(context, Index.routeName)})
+        });
   }
 }
