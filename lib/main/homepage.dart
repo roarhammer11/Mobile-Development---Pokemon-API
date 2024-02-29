@@ -5,11 +5,14 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:flutter/material.dart';
+import 'package:pokemon_api/main/owned_pokemon_argument.dart';
+import 'package:pokemon_api/main/owned_pokemons.dart';
 import 'settings.dart';
 import 'package:http/http.dart' as http;
 // ignore: implementation_imports
 import 'package:http/src/response.dart';
 import 'package:pokemon_api/main/dashboard_argument.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Homepage extends StatefulWidget {
@@ -28,6 +31,7 @@ class _HomepageState extends State<Homepage> {
   late ScreenArguments args;
   final db = firestore.FirebaseFirestore.instance;
   Map<String, dynamic> api = {};
+
   @override
   void initState() {
     super.initState();
@@ -258,63 +262,32 @@ class _HomepageState extends State<Homepage> {
   }
 
   releasePokemon() async {
+    List<Pokemons> pokemons = [];
+
     await db
         .collection("ownedPokemons")
         .where("userId", isEqualTo: FirebaseAuth.instance.currentUser?.uid)
         .get()
-        .then((event) => {
-              for (var doc in event.docs) {print("${doc.data()}")}
+        .then((event) async => {
+              // for (var doc in event.docs) {print("${doc.data()}")}
+              for (var doc in event.docs)
+                {
+                  await http
+                      .get(Uri.parse(
+                          "https://pokeapi.co/api/v2/pokemon/${doc.data()["pokemonId"]}"))
+                      .then((value) => {
+                            pokemons.add(Pokemons(
+                                jsonDecode(value.body)["id"],
+                                jsonDecode(value.body)["name"],
+                                jsonDecode(value.body)["sprites"]
+                                    ["front_default"]))
+                          })
+                }
             });
-
-    // Response response = await http.get(
-    //     Uri.parse("https://pokeapi.co/api/v2/pokemon/" + intValue.toString()));
-    // showDialog(
-
-    //     // ignore: use_build_context_synchronously
-    //     context: context,
-    //     builder: (BuildContext context) {
-    //       return Dialog(
-    //         shape: RoundedRectangleBorder(
-    //             borderRadius: BorderRadius.circular(20.0)),
-    //         child: Container(
-    //           constraints: const BoxConstraints(maxHeight: 300, maxWidth: 125),
-    //           child: Padding(
-    //             padding: const EdgeInsets.all(12.0),
-    //             child: Column(
-    //               crossAxisAlignment: CrossAxisAlignment.center,
-    //               children: [
-    //                 const Text("CAUGHT"),
-    //                 Image.network(
-    //                   specificApi["sprites"]["front_default"],
-    //                   frameBuilder: (BuildContext context, Widget child,
-    //                       int? frame, bool? wasSynchronouslyLoaded) {
-    //                     return Padding(
-    //                       padding: const EdgeInsets.all(8.0),
-    //                       child: child,
-    //                     );
-    //                   },
-    //                   loadingBuilder: (BuildContext context, Widget child,
-    //                       ImageChunkEvent? loadingProgress) {
-    //                     return Center(child: child);
-    //                   },
-    //                 ),
-    //                 Column(
-    //                   crossAxisAlignment: CrossAxisAlignment.center,
-    //                   children: [
-    //                     Text("id#: " + specificApi["id"].toString()),
-    //                     Text("Name: " + specificApi["name"]),
-    //                     Text("Base Experience: " +
-    //                         specificApi["base_experience"].toString()),
-    //                     Text("Height: " + specificApi["height"].toString()),
-    //                     Text("Weight: " + specificApi["weight"].toString()),
-    //                   ],
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //         ),
-    //       );
-    //     });
+    // print(pokemons[1].image);
+    // // ignore: use_build_context_synchronously
+    Navigator.pushNamed(context, OwnedPokemons.routeName,
+        arguments: OwnedPokemonArguments(pokemons));
   }
 
   void storePokemon(data) {
