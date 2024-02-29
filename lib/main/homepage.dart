@@ -41,6 +41,7 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
     args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
     return Scaffold(
       appBar: AppBar(
@@ -57,9 +58,9 @@ class _HomepageState extends State<Homepage> {
           children: <Widget>[
             ElevatedButton(
               onPressed: dashboard,
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Column(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(w * 0.01, 0, w * 0.01, 0),
+                child: const Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [Icon(Icons.dashboard), Text("Dashboard")],
                 ), //Container
@@ -67,9 +68,9 @@ class _HomepageState extends State<Homepage> {
             ),
             ElevatedButton(
               onPressed: catchPokemon,
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Column(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(w * 0.01, 0, w * 0.01, 0),
+                child: const Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [Icon(Icons.catching_pokemon), Text("Catch")],
                 ), //Container
@@ -77,9 +78,9 @@ class _HomepageState extends State<Homepage> {
             ),
             ElevatedButton(
                 onPressed: releasePokemon,
-                child: const Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Column(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(w * 0.01, 0, w * 0.01, 0),
+                  child: const Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [Icon(Icons.cancel), Text("Release")],
                   ), //Container

@@ -25,11 +25,17 @@ class _SettingsState extends State<Settings> {
       body: Center(
           child: Column(
         children: [
-          const SizedBox(
-            height: 30.0,
+           SizedBox(
+           height: MediaQuery.of(context).size.height * 0.01,
           ),
           Text(args.displayName),
+          SizedBox(
+           height: MediaQuery.of(context).size.height * 0.01,
+          ),
           Text(args.email),
+          SizedBox(
+           height: MediaQuery.of(context).size.height * 0.01,
+          ),
           PrimaryButton(
               text: "Logout", iconData: Icons.logout, onPressed: logout)
         ],

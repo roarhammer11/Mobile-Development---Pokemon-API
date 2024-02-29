@@ -44,14 +44,14 @@ class _IndexState extends State<Index> {
                   children: [
                     Text("Welcome Back!",
                         style: Theme.of(context).textTheme.displaySmall),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.2,
                     ),
                     const Text(
                       "Please Sign in to continue.",
                     ),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     CustomTextFormField(
                         labelText: "Email Address",
@@ -59,8 +59,8 @@ class _IndexState extends State<Index> {
                         iconData: Icons.email,
                         textInputType: TextInputType.emailAddress,
                         controller: loginEmailTextController),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     PasswordField(
                         labelText: "Password",
@@ -68,15 +68,15 @@ class _IndexState extends State<Index> {
                         obscureText: obscureText,
                         onTap: setPasswordVisibility,
                         controller: loginPasswordTextController),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     PrimaryButton(
                         text: "Login",
                         iconData: Icons.login,
                         onPressed: loginWithEmail),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     const Text("Or"),
                     SignInButton(
@@ -86,7 +86,8 @@ class _IndexState extends State<Index> {
                       },
                     ),
                     Container(
-                      margin: const EdgeInsets.only(left: 40.0),
+                      margin: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.1),
                       child: Row(
                         children: [
                           const Text("Don't have account?"),
@@ -116,8 +117,8 @@ class _IndexState extends State<Index> {
                   children: [
                     Text("Create Account",
                         style: Theme.of(context).textTheme.displaySmall),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     CustomTextFormField(
                         labelText: "Email Address",
@@ -125,8 +126,8 @@ class _IndexState extends State<Index> {
                         iconData: Icons.email,
                         textInputType: TextInputType.emailAddress,
                         controller: signUpEmailTextController),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     PasswordField(
                       labelText: "Password",
@@ -135,8 +136,8 @@ class _IndexState extends State<Index> {
                       onTap: setPasswordVisibility,
                       controller: signUpPasswordTextController,
                     ),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     PasswordField(
                       labelText: "Repeat Password",
@@ -145,24 +146,25 @@ class _IndexState extends State<Index> {
                       onTap: setPasswordVisibility,
                       controller: signUpRepeatPasswordTextController,
                     ),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     PrimaryButton(
                         text: "Confirm",
                         iconData: Icons.login,
                         onPressed: register),
-                    const SizedBox(
-                      height: 20.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
                     Container(
-                      margin: const EdgeInsets.only(left: 70.0),
+                      margin: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.15),
                       child: Row(
                         children: [
                           const Text("Already have an account?"),
                           TextButton(
                             // style: TextButton.styleFrom(
-                            //   textStyle: const TextStyle(fontSize: 20),
+                            //   textStyle: const TextStyle(fontSize: 20),S
                             // ),
 
                             onPressed: displayLogin,

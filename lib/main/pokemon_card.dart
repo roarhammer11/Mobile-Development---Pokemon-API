@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pokemon_api/main/homepage.dart';
 import 'package:pokemon_api/main/pokemon_card_background.dart';
 import 'package:pokemon_api/main/pokemon_card_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
@@ -14,7 +15,6 @@ class PokemonCard extends StatelessWidget {
     required this.name,
     required this.image,
   }) : super(key: key);
-
   BoxDecoration getContainerDecoration() => BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(7),
@@ -28,6 +28,7 @@ class PokemonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: releasePokemon,
+      onTapUp: (event) => Navigator.pop(context),
       child: Container(
         padding: const EdgeInsets.all(7),
         decoration: getContainerDecoration(),
@@ -49,6 +50,5 @@ class PokemonCard extends StatelessWidget {
         .get()
         .then((value) async => await db.runTransaction((transaction) async =>
             transaction.delete(value.docs[0].reference)));
-    
   }
 }
